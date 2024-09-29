@@ -1,0 +1,125 @@
+#include <iostream>
+#include <vector>
+#include <string>
+
+using namespace std;
+
+class Book {
+public:
+    string title;
+    string author;
+    bool isAvailable;
+
+    Book(string t, string a) : title(t), author(a), isAvailable(true) {}
+};
+
+class User {
+public:
+    string name;
+
+    User(string n) : name(n) {}
+};
+
+class Library {
+private:
+    vector<Book> books;
+    vector<User> users;
+
+public:
+    void addBook(string title, string author) {
+        books.emplace_back(title, author);
+        cout << "Book added successfully: " << title << endl;
+    }
+
+    void registerUser(string name) {
+        users.emplace_back(name);
+        cout << "User registered successfully: " << name << endl;
+    }
+
+    void borrowBook(string title, string userName) {
+        for (auto &book : books) {
+            if (book.title == title && book.isAvailable) {
+                book.isAvailable = false;
+                cout << userName << " borrowed the book: " << title << endl;
+                return;
+            }
+        }
+        cout << "Book not available or does not exist." << endl;
+    }
+
+    void returnBook(string title) {
+        for (auto &book : books) {
+            if (book.title == title && !book.isAvailable) {
+                book.isAvailable = true;
+                cout << "Book returned successfully: " << title << endl;
+                return;
+            }
+        }
+        cout << "This book was not borrowed or does not exist." << endl;
+    }
+
+    void displayBooks() {
+        cout << "Available Books:\n";
+        for (const auto &book : books) {
+            if (book.isAvailable) {
+                cout << "- " << book.title << " by " << book.author << endl;
+            }
+        }
+    }
+};
+
+int main() {
+    Library library;
+    int choice;
+    string title, author, userName;
+
+    while (true) {
+        cout << "\nLibrary Management System\n";
+        cout << "1. Add Book\n";
+        cout << "2. Register User\n";
+        cout << "3. Borrow Book\n";
+        cout << "4. Return Book\n";
+        cout << "5. Display Available Books\n";
+        cout << "6. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                cout << "Enter book title: ";
+                cin.ignore();
+                getline(cin, title);
+                cout << "Enter book author: ";
+                getline(cin, author);
+                library.addBook(title, author);
+                break;
+            case 2:
+                cout << "Enter user name: ";
+                cin.ignore();
+                getline(cin, userName);
+                library.registerUser(userName);
+                break;
+            case 3:
+                cout << "Enter book title to borrow: ";
+                cin.ignore();
+                getline(cin, title);
+                library.borrowBook(title, userName);
+                break;
+            case 4:
+                cout << "Enter book title to return: ";
+                cin.ignore();
+                getline(cin, title);
+                library.returnBook(title);
+                break;
+            case 5:
+                library.displayBooks();
+                break;
+            case 6:
+                cout << "Exiting...\n";
+                return 0;
+            default:
+                cout << "Invalid choice. Please try again.\n";
+        }
+    }
+    return 0;
+}
